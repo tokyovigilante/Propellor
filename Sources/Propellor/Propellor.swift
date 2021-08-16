@@ -21,13 +21,8 @@ public class Propellor {
     private let _eventLoop: EventLoop
     private let _renderer: Renderer
 
-    public init? () {
-        do {
-            try _renderer = Renderer()
-        } catch let error {
-            Log.error(error.localizedDescription)
-            return nil
-        }
+    public init () throws {
+        try _renderer = Renderer()
         _eventLoop = EventLoop()
         _eventLoop.handleEvent = handle
     }
