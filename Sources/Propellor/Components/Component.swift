@@ -47,10 +47,10 @@ public extension Component {
         let foreground = self.foreground ?? theme.foregroundColor
         let background = color ?? self.background ?? theme.backgroundColor
 
-        Termbox.puts(
-            x: Int32(rect.x),
-            y: Int32(rect.y+row),
+        Termbox.write(
             string: String(repeating: " ", count: rect.width),
+            x: rect.x,
+            y: rect.y+row,
             foreground: foreground.tbColor,
             background: background.tbColor
         )

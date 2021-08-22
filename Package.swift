@@ -12,7 +12,7 @@ let package = Package(
             targets: ["Propellor"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/tokyovigilante/Termbox", .branch("master")),
+        .package(url: "https://github.com/tokyovigilante/Termbox", .branch("main")),
         .package(url: "https://github.com/tokyovigilante/Harness", .branch("master")),
     ],
     targets: [

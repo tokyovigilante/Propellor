@@ -80,7 +80,8 @@ public class Label: Component {
         }
         let clearWidth = rect.width - displayText.count
         displayText += String(repeating: " ", count: clearWidth)
-        Termbox.puts(x: Int32(rect.x), y: Int32(rect.y), string: displayText,
+        Termbox.write(
+            string: displayText, x: rect.x, y: rect.y,
             foreground: foreground?.tbColor ?? theme.foregroundColor.tbColor,
             background: background?.tbColor ?? theme.backgroundColor.tbColor)
         isDirty = false

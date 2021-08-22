@@ -38,13 +38,13 @@ public class Line: Component {
         let horizontal = rect.width > rect.height
         if horizontal {
             let line = String(repeating: "─", count: rect.width)
-            Termbox.puts(x: Int32(rect.x), y: Int32(rect.y), string: line,
+            Termbox.write(string: line, x: rect.x, y: rect.y,
                 foreground: foreground?.tbColor ?? theme.foregroundColor.tbColor,
                 background: background?.tbColor ?? theme.backgroundColor.tbColor)
         } else {
             let line: UnicodeScalar = "│"
             for y in rect.y..<rect.endY {
-                Termbox.putc(x: Int32(rect.x), y: Int32(y), char: line,
+                Termbox.putc(x: rect.x, y: y, char: line,
                     foreground: foreground?.tbColor ?? theme.foregroundColor.tbColor,
                     background: background?.tbColor ?? theme.backgroundColor.tbColor)
             }
