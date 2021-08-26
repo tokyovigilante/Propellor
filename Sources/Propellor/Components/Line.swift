@@ -48,7 +48,6 @@ public class Line: Component {
                 Termbox.putc(x: rect.x, y: y, char: line,
                     foreground: foreground?.tbColor ?? theme.foregroundColor.tbColor,
                     background: background?.tbColor ?? theme.backgroundColor.tbColor)
-                Log.info("Rendering \(line) at \(rect.x),\(y)")
             }
 
         }

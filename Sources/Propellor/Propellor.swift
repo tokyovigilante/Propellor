@@ -38,7 +38,6 @@ public class Propellor {
             component.update(focused: focusedComponent === component)
         }
         _renderer.endDraw()
-        Log.info("Rendered \(_renderer.width)x\(_renderer.height)")
     }
 
     public func shutdown() {
