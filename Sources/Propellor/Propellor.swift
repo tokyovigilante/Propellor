@@ -63,6 +63,7 @@ public class Propellor {
         default:
             Log.warning("Unhandled event \(String(reflecting: event))")
         }
+        onEvent?(true)
     }
 
     private func handle (key: Key, modifier: Modifier) {
