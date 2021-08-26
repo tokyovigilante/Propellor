@@ -1,7 +1,7 @@
 import Foundation
 import Termbox
 
-public protocol Component: class {
+public protocol Component: AnyObject {
 
     var rect: Rect { get set }
 

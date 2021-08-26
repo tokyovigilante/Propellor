@@ -38,6 +38,7 @@ public class Propellor {
             component.update(focused: focusedComponent === component)
         }
         _renderer.endDraw()
+        Log.info("Rendered \(_renderer.width)x\(_renderer.height)")
     }
 
     public func shutdown() {
@@ -62,7 +63,6 @@ public class Propellor {
         default:
             Log.warning("Unhandled event \(String(reflecting: event))")
         }
-        onEvent?(true)
     }
 
     private func handle (key: Key, modifier: Modifier) {
@@ -94,6 +94,6 @@ public class Propellor {
 
     private func handle (resize: (width: Int, height: Int)) {
         Log.verbose("Screen resized to \(resize.width)x\(resize.height)")
-        onResize?(Size(width: width, height: height))
+        onResize?(Size(width: resize.width, height: resize.height))
     }
 }

@@ -80,6 +80,10 @@ public class Label: Component {
         }
         let clearWidth = rect.width - displayText.count
         displayText += String(repeating: " ", count: clearWidth)
+        Log.info("Rendering \(displayText) at \(rect.x),\(rect.y)")
+        for char in displayText.unicodeScalars {
+            Log.info("\(char.value)")
+        }
         Termbox.write(
             string: displayText, x: rect.x, y: rect.y,
             foreground: foreground?.tbColor ?? theme.foregroundColor.tbColor,
