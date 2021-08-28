@@ -28,12 +28,6 @@ public class TextView: Component {
 
     private var _offset = 0
 
-    public var theme: Theme {
-        didSet {
-            isDirty = true
-        }
-    }
-
     public var foreground: TermColor? {
         didSet {
             if let oldValue = oldValue, oldValue.bold {
@@ -55,28 +49,14 @@ public class TextView: Component {
         }
     }
 
-    public var bold: Bool {
-        get {
-            return foreground?.bold ?? theme.foregroundColor.bold
-        }
-        set {
-            if foreground == nil {
-                foreground = theme.foregroundColor
-            }
-            foreground!.bold = newValue
-        }
-    }
+    public var bold: Bool
 
     private (set) public var isDirty: Bool
 
-    public init (rect: Rect, theme: Theme, truncate: Bool = true) {
+    public init (rect: Rect, truncate: Bool = true) {
         self.rect = rect
-        self.theme = theme
         self.truncate = truncate
-        isDirty = true
-    }
-
-    public func triggerUpdate () {
+        bold = false
         isDirty = true
     }
 
@@ -103,7 +83,10 @@ public class TextView: Component {
 
     }
 
-    public func update (focused: Bool = false) {
+    public func update (theme: Theme, focused: Bool, forced: Bool) {
+        if forced {
+            isDirty = true
+        }
         if !isDirty || rect.zero {
             return
         }

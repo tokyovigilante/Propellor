@@ -49,12 +49,6 @@ public class Table: Component, Responder {
 
     public var rect: Rect {
         didSet {
-                isDirty = true
-        }
-    }
-
-    public var theme: Theme {
-        didSet {
             isDirty = true
         }
     }
@@ -73,9 +67,8 @@ public class Table: Component, Responder {
 
     private (set) public var isDirty: Bool
 
-    public init (rect: Rect, theme: Theme) {
+    public init (rect: Rect = Rect()) {
         self.rect = rect
-        self.theme = theme
         isDirty = true
     }
 
@@ -123,7 +116,10 @@ public class Table: Component, Responder {
 
     }
 
-    public func update (focused: Bool = false) {
+    public func update (theme: Theme, focused: Bool, forced: Bool) {
+        if forced {
+            isDirty = true
+        }
         if !isDirty || rect.zero {
             return
         }
@@ -156,8 +152,8 @@ public class Table: Component, Responder {
                         break
                     }
                     if row + _offset == currentRow {
-                        let foreground = focused ? theme.focusedForegroundColor : theme.selectedForegroundColor
-                        let background = focused ? theme.focusedBackgroundColor : theme.selectedBackgroundColor
+                        let foreground = focused ? theme.focusedForeground : theme.selectedForeground
+                        let background = focused ? theme.focusedBackground : theme.selectedBackground
 
                         clear(row: rowLineOffset, color: background)
                         label.foreground = foreground
@@ -166,7 +162,7 @@ public class Table: Component, Responder {
                     let labelOffset = Point(x: rect.x + 1, y: rect.y + rowLineOffset)
                     label.rect = label.rect.offset(by: labelOffset)
                     label.rect.width -= 2
-                    label.update()
+                    label.update(theme: theme, focused: focused, forced: forced)
                 }
             }
         }

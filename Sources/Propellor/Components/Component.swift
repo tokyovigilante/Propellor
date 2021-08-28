@@ -7,13 +7,11 @@ public protocol Component: AnyObject {
 
     var isDirty: Bool { get }
 
-    var theme: Theme { get set }
-
     var foreground: TermColor? { get set }
 
     var background: TermColor? { get set }
 
-    func update (focused: Bool)
+    func update (theme: Theme, focused: Bool, forced: Bool)
 
     func clear (row: Int, color: TermColor?)
 }
@@ -44,15 +42,15 @@ public extension Component {
     }
 
     func clear (row: Int, color: TermColor? = nil) {
-        let foreground = self.foreground ?? theme.foregroundColor
-        let background = color ?? self.background ?? theme.backgroundColor
+        let foreground = TermColor.default
+        let background = color?.tbColor ?? self.background?.tbColor ?? TermColor.default
 
         Termbox.write(
             string: String(repeating: " ", count: rect.width),
             x: rect.x,
             y: rect.y+row,
-            foreground: foreground.tbColor,
-            background: background.tbColor
+            foreground: foreground,
+            background: background
         )
     }
 

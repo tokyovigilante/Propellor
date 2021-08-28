@@ -4,15 +4,13 @@ import LoggerAPI
 
 public class Line: Component {
 
-    public var rect: Rect
-
-    private (set) public var isDirty: Bool
-
-    public var theme: Theme {
+    public var rect: Rect {
         didSet {
             isDirty = true
         }
     }
+
+    private (set) public var isDirty: Bool
 
     public var foreground: TermColor? = nil {
         didSet {
@@ -26,28 +24,33 @@ public class Line: Component {
         }
     }
 
-    public init (rect: Rect, theme: Theme) {
+    public init (rect: Rect = Rect()) {
         self.rect = rect
-        self.theme = theme
         isDirty = true
     }
 
-    public func update (focused: Bool = false) {
-        if !isDirty {
+    public func update (theme: Theme, focused: Bool, forced: Bool) {
+        if forced {
+            isDirty = true
+        }
+        if !isDirty || rect.zero {
             return
+        }
+        defer {
+            isDirty = false
         }
         let horizontal = rect.width > rect.height
         if horizontal {
             let line = String(repeating: "─", count: rect.width)
             Termbox.write(string: line, x: rect.x, y: rect.y,
-                foreground: foreground?.tbColor ?? theme.foregroundColor.tbColor,
-                background: background?.tbColor ?? theme.backgroundColor.tbColor)
+                foreground: foreground?.tbColor ?? theme.foreground.tbColor,
+                background: background?.tbColor ?? theme.background.tbColor)
         } else {
             let line: UnicodeScalar = "│"
             for y in rect.y..<rect.endY {
                 Termbox.putc(x: rect.x, y: y, char: line,
-                    foreground: foreground?.tbColor ?? theme.foregroundColor.tbColor,
-                    background: background?.tbColor ?? theme.backgroundColor.tbColor)
+                    foreground: foreground?.tbColor ?? theme.foreground.tbColor,
+                    background: background?.tbColor ?? theme.background.tbColor)
             }
 
         }

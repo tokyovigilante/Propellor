@@ -19,22 +19,7 @@ public class Label: Component {
         }
     }
 
-    public var theme: Theme {
-        didSet {
-            foreground = nil
-            background = nil
-            isDirty = true
-        }
-    }
-
-    public var foreground: TermColor? {
-        didSet {
-            if let oldValue = oldValue, oldValue.bold {
-                self.bold = true
-            }
-            isDirty = true
-        }
-    }
+    public var foreground: TermColor?
 
     public var background: TermColor? {
         didSet {
@@ -48,29 +33,24 @@ public class Label: Component {
         }
     }
 
-    public var bold: Bool {
-        get {
-            return foreground?.bold ?? theme.foregroundColor.bold
-        }
-        set {
-            if foreground == nil {
-                foreground = theme.foregroundColor
-            }
-            foreground!.bold = newValue
-        }
-    }
+    public var bold: Bool = false
 
-    public init (rect: Rect, text: String, theme: Theme, truncate: Bool = true) {
+    public init (rect: Rect = Rect(), text: String, truncate: Bool = true) {
         self.rect = rect
         self.text = text
-        self.theme = theme
         self.truncate = truncate
         isDirty = true
     }
 
-    public func update (focused: Bool = false) {
+    public func update (theme: Theme, focused: Bool, forced: Bool) {
+        if forced {
+            isDirty = true
+        }
         if !isDirty || rect.zero {
             return
+        }
+        defer {
+            isDirty = false
         }
         var displayText = text.firstParagraph.stripEmoji()
         if truncate {
@@ -80,10 +60,11 @@ public class Label: Component {
         }
         let clearWidth = rect.width - displayText.count
         displayText += String(repeating: " ", count: clearWidth)
+        var foreground = foreground ?? theme.foreground
+        foreground.bold = bold
         Termbox.write(
             string: displayText, x: rect.x, y: rect.y,
-            foreground: foreground?.tbColor ?? theme.foregroundColor.tbColor,
-            background: background?.tbColor ?? theme.backgroundColor.tbColor)
-        isDirty = false
+            foreground: foreground.tbColor,
+            background: background?.tbColor ?? theme.background.tbColor)
     }
 }

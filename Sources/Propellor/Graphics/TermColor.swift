@@ -40,4 +40,8 @@ public struct TermColor {
         }
         return Attributes(rawValue: rgb32)
     }
+
+    static var `default`: Attributes {
+        return Attributes.default
+    }
 }

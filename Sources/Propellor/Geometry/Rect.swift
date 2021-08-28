@@ -56,7 +56,7 @@ public struct Rect {
         return width == 0 || height == 0
     }
 
-    public init (x: Int, y: Int, width: Int, height: Int) {
+    public init (x: Int = 0, y: Int = 0, width: Int = 0, height: Int = 0) {
         self.origin = Point(x: x, y: y)
         self.size = Size(width: width, height: height)
     }

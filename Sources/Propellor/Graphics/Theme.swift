@@ -2,21 +2,21 @@ import Foundation
 
 public struct Theme {
 
-    let foregroundColor: TermColor
-    let backgroundColor: TermColor
-    let focusedForegroundColor: TermColor
-    let focusedBackgroundColor: TermColor
-    let selectedForegroundColor: TermColor
-    let selectedBackgroundColor: TermColor
+    let foreground: TermColor
+    let background: TermColor
+    let focusedForeground: TermColor
+    let focusedBackground: TermColor
+    let selectedForeground: TermColor
+    let selectedBackground: TermColor
 
     public static var `default`: Theme {
         return Theme(
-            foregroundColor: TermColor(hex: "2E3440")!,
-            backgroundColor: TermColor(hex: "ECEFF4")!,
-            focusedForegroundColor: TermColor(hex: "2E3440")!,
-            focusedBackgroundColor: TermColor(hex: "88C0D0")!,
-            selectedForegroundColor: TermColor(hex: "2E3440")!,
-            selectedBackgroundColor: TermColor(hex: "D8DEE9")!
+            foreground: TermColor(hex: "2E3440")!,
+            background: TermColor(hex: "ECEFF4")!,
+            focusedForeground: TermColor(hex: "2E3440")!,
+            focusedBackground: TermColor(hex: "88C0D0")!,
+            selectedForeground: TermColor(hex: "2E3440")!,
+            selectedBackground: TermColor(hex: "D8DEE9")!
         )
     }
 }

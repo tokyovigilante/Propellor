@@ -12,6 +12,8 @@ public class Propellor {
         return _renderer.width
     }
 
+    public var theme: Theme = .default
+
     public var focusedComponent: Component? = nil
 
     public var onResize: ((Size) -> Void)? = nil
@@ -31,11 +33,11 @@ public class Propellor {
         _eventLoop.start()
     }
 
-    public func draw (components: [Component]) {
+    public func draw (components: [Component], forceUpdate forced: Bool = false) {
         assert(Thread.isMainThread, "Drawing must be done on main thread")
         _renderer.beginDraw()
         for component in components {
-            component.update(focused: focusedComponent === component)
+            component.update(theme: theme, focused: focusedComponent === component, forced: forced)
         }
         _renderer.endDraw()
     }
