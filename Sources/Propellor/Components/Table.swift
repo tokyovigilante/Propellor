@@ -2,25 +2,6 @@ import Foundation
 import LoggerAPI
 import Termbox
 
-public protocol TableDataSource {
-
-    var rowCount: Int { get }
-
-    var columnCount: Int { get }
-
-    var rowHeight: Int { get }
-
-    func columnWidth (for column: Int) -> Int
-
-    func data (row: Int, column: Int) -> [Label]?
-}
-
-public protocol TableDelegate {
-
-    func didSelect (row: Int)
-
-}
-
 public class Table: Component, Responder {
 
     public let uuid = UUID()
@@ -67,8 +48,11 @@ public class Table: Component, Responder {
 
     private (set) public var isDirty: Bool
 
-    public init (rect: Rect = Rect()) {
+    public let name: String
+
+    public init (rect: Rect = Rect(), name: String) {
         self.rect = rect
+        self.name = name
         isDirty = true
     }
 
@@ -98,10 +82,10 @@ public class Table: Component, Responder {
         guard let dataSource = dataSource else {
             return
         }
-        if currentRow >= dataSource.rowCount-1 {
+        if currentRow >= dataSource.rowCount(for: 0, in: name) - 1 {
             return
         }
-        if currentRow - _offset >= maxEntirelyVisibleRowCount(rowHeight: dataSource.rowHeight) - 1 {
+        if currentRow - _offset >= maxEntirelyVisibleRowCount(rowHeight: dataSource.rowHeight(in: name)) - 1 {
             _offset += 1
         }
         currentRow += 1
@@ -132,16 +116,16 @@ public class Table: Component, Responder {
         guard let dataSource = dataSource, let visibleRows = visibleRows(dataSource: dataSource) else {
             return
         }
-        let rowHeight = dataSource.rowHeight
-        let columnCount = dataSource.columnCount
+        let rowHeight = dataSource.rowHeight(in: name)
+        let columnCount = dataSource.columnCount(in: name)
 
         for row in 0..<visibleRows.count {
             for column in 0..<columnCount {
-                var columnWidth = dataSource.columnWidth(for: column)
+                var columnWidth = dataSource.columnWidth(for: column, in: name)
                 if columnWidth == 0 {
                     columnWidth = rect.width / columnCount
                 }
-                guard let data = dataSource.data(row: row + _offset, column: column) else {
+                guard let data = dataSource.data(row: row + _offset, column: column, in: name) else {
                     Log.verbose("No table data for (\(column),\(row))")
                     clear(rows: row*rowHeight..<(row+row)*rowHeight)
                     continue
@@ -191,13 +175,13 @@ public class Table: Component, Responder {
     }
 
     private func visibleRows (dataSource: TableDataSource) -> Range<Int>? {
-        var availableRows = dataSource.rowCount
+        var availableRows = dataSource.rowCount(for: 0, in: name)
         let firstRow = _offset
         if firstRow > availableRows {
             return nil
         }
         availableRows -= firstRow
-        let lastRow = firstRow + min(maxVisibleRowCount(rowHeight: dataSource.rowHeight), availableRows)
+        let lastRow = firstRow + min(maxVisibleRowCount(rowHeight: dataSource.rowHeight(in: name)), availableRows)
         return firstRow..<lastRow
     }
 
@@ -214,4 +198,24 @@ public class Table: Component, Responder {
         return maxVisibleRowCount
     }
 
+}
+
+
+public protocol TableDataSource {
+
+    func sectionCount (in table: String) -> Int
+    func rowCount (for section: Int, in table: String) -> Int
+
+    func columnCount (in table: String) -> Int
+
+    func rowHeight(in table: String) -> Int
+
+    func columnWidth (for column: Int, in table: String) -> Int
+
+    func data (row: Int, column: Int, in table: String) -> [Label]?
+}
+
+public protocol TableDelegate {
+
+    func didSelect (row: Int)
 }

@@ -35,7 +35,7 @@ public class Label: Component {
 
     public var bold: Bool = false
 
-    public init (rect: Rect = Rect(), text: String, truncate: Bool = true) {
+    public init (rect: Rect = Rect(), text: String = "", truncate: Bool = true) {
         self.rect = rect
         self.text = text
         self.truncate = truncate
