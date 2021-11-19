@@ -23,7 +23,7 @@ public class Table: Component, Responder {
 
     private (set) public var currentRow = 0 {
         didSet {
-            delegate?.didSelect(row: currentRow)
+            delegate?.didSelect(row: currentRow, in: name)
             isDirty = true
         }
     }
@@ -65,9 +65,6 @@ public class Table: Component, Responder {
     }
 
     public func scrollUp () {
-        guard let dataSource = dataSource else {
-            return
-        }
         if currentRow == 0 {
             return
         }
@@ -78,7 +75,6 @@ public class Table: Component, Responder {
     }
 
     public func scrollDown () {
-
         guard let dataSource = dataSource else {
             return
         }
@@ -118,14 +114,13 @@ public class Table: Component, Responder {
         }
         let rowHeight = dataSource.rowHeight(in: name)
         let columnCount = dataSource.columnCount(in: name)
-
         for row in 0..<visibleRows.count {
             for column in 0..<columnCount {
                 var columnWidth = dataSource.columnWidth(for: column, in: name)
                 if columnWidth == 0 {
                     columnWidth = rect.width / columnCount
                 }
-                guard let data = dataSource.data(row: row + _offset, column: column, in: name) else {
+                guard let data = dataSource.data(row: row + _offset, column: column, section: 0, in: name) else {
                     Log.verbose("No table data for (\(column),\(row))")
                     clear(rows: row*rowHeight..<(row+row)*rowHeight)
                     continue
@@ -145,7 +140,8 @@ public class Table: Component, Responder {
                     }
                     let labelOffset = Point(x: rect.x + 1, y: rect.y + rowLineOffset)
                     label.rect = label.rect.offset(by: labelOffset)
-                    label.rect.width -= 2
+                    label.rect.width = columnWidth - 2
+                    label.rect.height = 1
                     label.update(theme: theme, focused: focused, forced: forced)
                 }
             }
@@ -171,7 +167,6 @@ public class Table: Component, Responder {
             Log.debug("Component \(uuid): unhandled character \(character), modifier \(modifier)")
             return false
         }
-        //return true
     }
 
     private func visibleRows (dataSource: TableDataSource) -> Range<Int>? {
@@ -212,10 +207,10 @@ public protocol TableDataSource {
 
     func columnWidth (for column: Int, in table: String) -> Int
 
-    func data (row: Int, column: Int, in table: String) -> [Label]?
+    func data (row: Int, column: Int, section: Int, in table: String) -> [Label]?
 }
 
 public protocol TableDelegate {
 
-    func didSelect (row: Int)
+    func didSelect (row: Int, in table: String)
 }
