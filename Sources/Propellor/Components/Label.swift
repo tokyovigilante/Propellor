@@ -61,7 +61,7 @@ public class Label: Component {
         let clearWidth = rect.width - displayText.count
         displayText += String(repeating: " ", count: clearWidth)
         var foreground = foreground ?? theme.foreground
-        foreground.bold = bold
+        foreground.bold = bold ? bold : foreground.bold
         Termbox.write(
             string: displayText, x: rect.x, y: rect.y,
             foreground: foreground.tbColor,
