@@ -20,6 +20,8 @@ public class Propellor {
 
     public var onEvent: ((Bool) -> Void)? = nil
 
+    public var onCharacter: ((UnicodeScalar, Modifier) -> Void)? = nil
+
     private let _eventLoop: EventLoop
     private let _renderer: Renderer
 
@@ -47,15 +49,19 @@ public class Propellor {
     }
 
     private func handle (event: Event) {
-
         Log.debug("\(String(describing: event))")
+        var handled = false
         switch event {
         case let .key(modifier, value):
-            handle(key: value, modifier: modifier)
+            handled = handle(key: value, modifier: modifier)
         case let .character(modifier, value):
-            handle(character: value, modifier: modifier)
+            handled = handle(character: value, modifier: modifier)
+            if !handled {
+                onCharacter?(value, modifier)
+            }
         case let .resize(width, height):
             handle(resize: (Int(width), Int(height)))
+            handled = true
   /*      case let .mouse(x, y, event):
 
         case let .other(type):
@@ -64,34 +70,28 @@ public class Propellor {
         default:
             Log.warning("Unhandled event \(String(reflecting: event))")
         }
-        onEvent?(true)
+        onEvent?(handled)
     }
 
-    private func handle (key: Key, modifier: Modifier) {
+    private func handle (key: Key, modifier: Modifier) -> Bool {
         if let component = focusedComponent as? Responder {
             if component.handle(key: key, modifier: modifier) {
-                return
+                return true
             }
         }
         switch key {
         default:
-            return
+            return false
         }
     }
 
-    private func handle (character: UnicodeScalar, modifier: Modifier) {
+    private func handle (character: UnicodeScalar, modifier: Modifier) -> Bool {
         if let component = focusedComponent as? Responder {
             if component.handle(character: character, modifier: modifier) {
-                return
+                return true
             }
         }
-        switch character {
-        case "q":
-            shutdown()
-            exit(0)
-        default:
-            return
-        }
+        return false
     }
 
     private func handle (resize: (width: Int, height: Int)) {
