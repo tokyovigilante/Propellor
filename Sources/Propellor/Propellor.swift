@@ -36,7 +36,7 @@ public class Propellor {
     }
 
     public func draw (components: [Component], forceUpdate forced: Bool = false) {
-        assert(Thread.isMainThread, "Drawing must be done on main thread")
+        dispatchPrecondition(condition: .onQueue(.main))
         _renderer.beginDraw()
         for component in components {
             component.update(theme: theme, focused: focusedComponent === component, forced: forced)
