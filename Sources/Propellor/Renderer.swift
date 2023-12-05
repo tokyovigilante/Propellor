@@ -19,10 +19,6 @@ public class Renderer {
 
 
     func beginDraw () {
-        clear()
-    }
-
-    func clear () {
         Termbox.clear()
     }
 
