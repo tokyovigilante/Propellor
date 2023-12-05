@@ -45,7 +45,7 @@ public class Propellor {
     }
 
     public func shutdown() {
-        Termbox.shutdown()
+        _renderer.shutdown()
     }
 
     private func handle (event: Event) {
